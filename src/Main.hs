@@ -587,11 +587,18 @@ process headerFiles bndFile  =
     tracePreproc (unwords (cpp:args))
     exitCode <- CIO.liftIO $ do
       preprocHnd <- openFile preprocFile WriteMode
+      putStrLn $ unwords (cpp : args)
+      print (cpp, args)
       cppproc <- runProcess cpp args
-        Nothing Nothing Nothing (Just preprocHnd) Nothing
+        Nothing -- working directory
+        Nothing -- env
+        Nothing -- stdin
+        (Just preprocHnd) -- stdout
+        Nothing -- stderr
       waitForProcess cppproc
     case exitCode of
-      CIO.ExitFailure _ -> fatal "Error during preprocessing custom header file"
+      CIO.ExitFailure _ -> do
+          fatal "Error during preprocessing custom header file"
       _                 -> return ()
     --
     -- load and analyse the C header file
