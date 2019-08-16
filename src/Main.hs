@@ -603,6 +603,7 @@ process headerFiles bndFile  =
     --
     -- load and analyse the C header file
     --
+    CIO.putStrLn preprocFile
     (cheader, preprocMsgs) <- loadAttrC preprocFile
     CIO.putStr preprocMsgs
     --
@@ -611,7 +612,7 @@ process headerFiles bndFile  =
     --
     keep <- getSwitch keepSB
     unless keep $ do
-      CIO.removeFile preprocFile
+      -- CIO.removeFile preprocFile
       case headerFiles of
         [_headerFile] | null header
           -> CIO.removeFile newHeaderFile
